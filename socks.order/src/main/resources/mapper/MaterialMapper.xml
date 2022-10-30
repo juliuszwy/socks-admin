@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.scoks.order.mapper.MaterialMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.scoks.order.entity.Material">
+        <id column="id" property="id"/>
+        <result column="category" property="category"/>
+        <result column="name" property="name"/>
+        <result column="colour" property="colour"/>
+        <result column="manufactor" property="manufactor"/>
+        <result column="sum" property="sum"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , category, name, colour, manufactor, sum,state, create_time, update_time
+    </sql>
+    <update id="updateNum">
+        update material
+        set sum = sum + #{num}
+        where id = #{materialId}
+          and sum + #{num} >= 0
+    </update>
+
+
+    <select id="listMaterials" resultMap="BaseResultMap">
+        SELECT * from material
+        where state = 0
+        <if test="where.category!=null">
+            and `category` = #{where.category}
+        </if>
+        <if test="where.name!=null">
+            and name like concat('%',#{where.name},'%')
+        </if>
+        <if test="where.manufactor!=null">
+            and manufactor like concat('%',#{where.manufactor},'%')
+        </if>
+        <if test="where.colour!=null">
+            and colour = #{where.colour}
+        </if>
+    </select>
+</mapper>

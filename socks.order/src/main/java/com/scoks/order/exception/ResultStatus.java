@@ -35,7 +35,9 @@ public enum ResultStatus {
 
     PRODUCT_OUT_LIMIT(-112, "外发数量超过款号总目标"),
 
-    PRODUCT_STATE_ERR(-113, "产品已删除");
+    PRODUCT_STATE_ERR(-113, "产品已删除"),
+
+    MATERIAL_NOT_ENOUGH(-200, "原料不足扣除数量");
 
     private int code;
 

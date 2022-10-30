@@ -7,5 +7,6 @@ public class Constant {
     public static final String POSITION_DIRECTOR = "3";
     public static final String POSITION_FINALIZE = "5";
     public static final String POSITION_OUT = "6";
+    public static final String STORAGE = "7";
 
 }

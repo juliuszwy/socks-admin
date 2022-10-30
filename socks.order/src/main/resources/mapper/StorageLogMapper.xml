@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.scoks.order.mapper.StorageLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.scoks.order.entity.StorageLog">
+        <id column="id" property="id"/>
+
+        <result column="material_id" property="materialId"/>
+        <result column="num" property="num"/>
+        <result column="type" property="type"/>
+        <result column="storage_region_id" property="storageRegionId"/>
+        <result column="remarks" property="remarks"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+
+
+        <result column="category" property="materialCategory"/>
+        <result column="name" property="materialName"/>
+        <result column="colour" property="materialColour"/>
+        <result column="manufactor" property="materialManufactor"/>
+        <result column="region" property="region"/>
+    </resultMap>
+
+
+    <select id="listStorageLog" resultMap="BaseResultMap">
+        select a.*,b.category,b.name,b.colour,b.manufactor,c.region
+        from storage_log a
+        left join material b on a.material_id = b.id
+        left join storage_region_material c on a.storage_region_id = c.id
+        where 1=1
+        <if test="where.storageRegionId!=null">
+            and a.`storage_region_id` = #{where.storageRegionId}
+        </if>
+        <if test="where.region!=null">
+            and c.`region` = #{where.region}
+        </if>
+        <if test="where.materialColour!=null">
+            and b.`colour` = #{where.materialColour}
+        </if>
+
+        <if test="where.materialCategory!=null">
+            and b.`category` = #{where.materialCategory}
+        </if>
+        <if test="where.materialName!=null">
+            and b.name like concat('%',#{where.materialName},'%')
+        </if>
+        <if test="where.materialManufactor!=null">
+            and b.manufactor like concat('%',#{where.materialManufactor},'%')
+        </if>
+        <if test="where.startTime!=null">
+            and a.create_time > #{where.startTime}
+        </if>
+        <if test="where.endTime!=null">
+            and #{where.endTime} > a.create_time
+        </if>
+
+
+    </select>
+
+</mapper>
