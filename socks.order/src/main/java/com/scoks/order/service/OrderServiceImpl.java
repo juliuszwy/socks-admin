@@ -43,6 +43,11 @@ public class OrderServiceImpl {
     @Autowired
     private PartnerMapper partnerMapper;
 
+    @Autowired
+    private OrderMaterialMapper orderMaterialMapper;
+    @Autowired
+    private OrderMaterialLogMapper orderMaterialLogMapper;
+
     public Page<Order> findOrderPageList(Page<Order> page, OrderQuery form) {
         Subject currentUser = SecurityUtils.getSubject();
         Staff user = (Staff) currentUser.getPrincipal();
@@ -504,5 +509,56 @@ public class OrderServiceImpl {
     public void setOrderStatus(OrderStatus orderStatus) {
         orderStatus.setUpdateTime(System.currentTimeMillis());
         orderStatusMapper.updateById(orderStatus);
+    }
+
+    public Page<OrderMaterial> findOrderMaterialPageList(Page<OrderMaterial> page, OrderMaterial form) {
+        List<OrderMaterial> materials = orderMaterialMapper.listOrderMaterial(page, form);
+        page.setRecords(materials);
+        return page;
+    }
+
+
+    public void insertOrUpdateMaterial(OrderMaterial form) {
+        if (form.getId() == null) {//新增
+            long l = System.currentTimeMillis();
+            form.setCreateTime(l);
+            form.setUpdateTime(l);
+            form.setGetNum(0L);
+            orderMaterialMapper.insert(form);
+        } else {
+            form.setOrderId(null);
+            form.setGetNum(null);
+            form.setUpdateTime(System.currentTimeMillis());
+            orderMaterialMapper.updateById(form);
+        }
+    }
+
+    public Page<OrderMaterialLog> findOrderMaterialLogPageList(Page<OrderMaterialLog> page, OrderMaterialLog form) {
+        List<OrderMaterialLog> materials = orderMaterialLogMapper.listOrderMaterialLogs(page, form);
+        page.setRecords(materials);
+        return page;
+    }
+
+    @Transactional
+    public void insertOrUpdateMaterialLog(OrderMaterialLog form) {
+        if (form.getId() == null) {//新增
+            long l = System.currentTimeMillis();
+            form.setCreateTime(l);
+            form.setUpdateTime(l);
+            orderMaterialLogMapper.insert(form);
+            orderMaterialMapper.updateGetNum(form.getOrderMaterialId(), form.getGetNum());
+        } else {
+            if (form.getGetNum() == null) {
+                return;
+            }
+            OrderMaterialLog orderMaterialLog = orderMaterialLogMapper.selectById(form.getId());
+            form.setOrderMaterialId(null);
+            form.setUpdateTime(System.currentTimeMillis());
+            orderMaterialLogMapper.updateById(form);
+            if (orderMaterialLog.getGetNum() != form.getGetNum()) {
+                orderMaterialMapper.updateGetNum(orderMaterialLog.getOrderMaterialId(), form.getGetNum() - orderMaterialLog.getGetNum());
+            }
+
+        }
     }
 }

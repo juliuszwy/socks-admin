@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.scoks.order.mapper.OrderMaterialLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.scoks.order.entity.OrderMaterialLog">
+        <id column="id" property="id"/>
+        <result column="order_material_id" property="orderMaterialId"/>
+        <result column="get_num" property="getNum"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+
+        <result column="creator_name" property="creatorName"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , order_material_id, get_num, creator, create_time, update_time
+    </sql>
+    <select id="listOrderMaterialLogs" resultMap="BaseResultMap">
+        select a.*, c.name AS creator_name
+        from order_material_log a
+                 left join staff c on a.creator = c.id
+        where a.order_material_id = #{where.orderMaterialId}
+
+    </select>
+
+</mapper>

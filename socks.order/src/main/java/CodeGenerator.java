@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 public class CodeGenerator {
 
-    private static String[] tables = {"material", "storage_log","storage_region_material"};
+    private static String[] tables = {"order_material", "order_material_log"};
 
     public static void main(String[] args) {
         // 代码生成器

@@ -255,4 +255,38 @@ public class OrderController extends BaseController {
         return Result.success(null);
     }
 
+
+    @GetMapping(value = "/material")
+    public Object materials(Page<OrderMaterial> page, OrderMaterial from) {
+        return orderService.findOrderMaterialPageList(page, from);
+    }
+
+    @PostMapping(value = "/material")
+    @RequiresAuthentication
+    @RequiresRoles(value = {Constant.POSITION_SALESMAN, Constant.POSITION_BOSS, Constant.POSITION_DIRECTOR}, logical = Logical.OR)
+    public Result setMaterial(OrderMaterial orderMaterial) {
+        if (orderMaterial.getId() == null) {
+            orderMaterial.setCreator(getLoginUser().getId());
+        }
+        orderService.insertOrUpdateMaterial(orderMaterial);
+        return Result.success(null);
+    }
+
+
+    @GetMapping(value = "/material_log")
+    public Object materials_log(Page<OrderMaterialLog> page, OrderMaterialLog from) {
+        return orderService.findOrderMaterialLogPageList(page, from);
+    }
+    
+    @RequiresAuthentication
+    @PostMapping(value = "/material_log")
+    @RequiresRoles(value = {Constant.POSITION_SALESMAN, Constant.POSITION_BOSS, Constant.POSITION_DIRECTOR}, logical = Logical.OR)
+    public Result setMaterial_log(OrderMaterialLog orderMaterialLog) {
+        if (orderMaterialLog.getId() == null) {
+            orderMaterialLog.setCreator(getLoginUser().getId());
+        }
+        orderService.insertOrUpdateMaterialLog(orderMaterialLog);
+        return Result.success(null);
+    }
+
 }
