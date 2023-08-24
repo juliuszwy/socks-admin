@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/scoks/api/order")
@@ -122,6 +123,19 @@ public class OrderController extends BaseController {
             form.setCreator(loginUser.getId());
         }
         orderService.setOrderProductWork(form);
+        return Result.success(null);
+    }
+
+    @RequiresAuthentication
+    @RequiresRoles(value = {Constant.POSITION_DIRECTOR, Constant.POSITION_BOSS}, logical = Logical.OR)
+    @PostMapping(value = "/work_batch")
+    public Object work_edit(@RequestBody List<OrderProductWork> works) {
+        Staff loginUser = getLoginUser();
+        for (OrderProductWork orderProductWork : works)
+            if (orderProductWork.getId() == null) {
+                orderProductWork.setCreator(loginUser.getId());
+                orderService.setOrderProductWork(orderProductWork);
+            }
         return Result.success(null);
     }
 
@@ -277,7 +291,7 @@ public class OrderController extends BaseController {
     public Object materials_log(Page<OrderMaterialLog> page, OrderMaterialLog from) {
         return orderService.findOrderMaterialLogPageList(page, from);
     }
-    
+
     @RequiresAuthentication
     @PostMapping(value = "/material_log")
     @RequiresRoles(value = {Constant.POSITION_SALESMAN, Constant.POSITION_BOSS, Constant.POSITION_DIRECTOR}, logical = Logical.OR)

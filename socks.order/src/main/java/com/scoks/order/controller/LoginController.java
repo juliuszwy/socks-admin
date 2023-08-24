@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -99,19 +96,17 @@ public class LoginController extends BaseController {
             dicts.forEach(v -> {
                 List<Customer> customerList = map.get(v.getId() + "");
                 if (customerList != null) {
-                    boolean flag = true;
                     //如果是业务员判断是否可以显示国家
                     if (loginUser.getPosition() == Enums.Position.SALESMAN.position()) {
-                        boolean temFlag = false;
-                        for (Customer customer : customerList) {
-                            if (customer.getSalesman() == loginUser.getId()) {
-                                temFlag = true;
-                                break;
+                        Iterator<Customer> iterator = customerList.iterator();
+                        while (iterator.hasNext()) {
+                            Customer customer = iterator.next();
+                            if (customer.getSalesman() != loginUser.getId()) {
+                                iterator.remove();
                             }
                         }
-                        flag = temFlag;
                     }
-                    if (flag) {
+                    if (!customerList.isEmpty()) {
                         v.setObj(customerList);
                         dictRes.add(v);
                     }

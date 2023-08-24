@@ -7,7 +7,8 @@ public interface Enums {
         DIRECTOR(3),
         WORKER(4),
         FINALIZE(5),
-        OUT(6);
+        OUT(6),
+        STORAGE(7);
         private int position;
 
         Position(int position) {
